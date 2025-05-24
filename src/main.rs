@@ -17,8 +17,7 @@ struct Claims {
     iss: String,
     #[serde(deserialize_with = "deserialize_audience")]
     aud: String,
-    email: Option<String>,
-    // ... add more claims as needed
+    email: Option<String>
 }
 
 // Custom deserializer to handle audience as either string or array
@@ -287,7 +286,8 @@ fn create_response(status: StatusCode) -> (StatusCode, HeaderMap) {
     headers.insert("connection", HeaderValue::from_static("keep-alive"));
     
     // Set Keep-Alive header with timeout and max requests
-    headers.insert("keep-alive", HeaderValue::from_static("timeout=75, max=1000"));
+    // Optimized for nginx: longer timeout, more requests per connection
+    headers.insert("keep-alive", HeaderValue::from_static("timeout=120, max=10000"));
     
     // Disable caching for auth responses
     headers.insert("cache-control", HeaderValue::from_static("no-cache, no-store, must-revalidate"));

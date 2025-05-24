@@ -1,0 +1,23 @@
+# Docker ignore file to reduce build context size
+target/
+Dockerfile
+.dockerignore
+.git/
+.gitignore
+README.md
+*.md
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Rust artifacts that shouldn't be in container
+**/*.rs.bk
+**/*.pdb
