@@ -6,11 +6,8 @@ This repository includes GitHub Actions workflows for continuous integration and
 
 ### 1. CI Workflow (`.github/workflows/ci.yml`)
 Runs on every pull request and push to main branch:
-- **Code Quality**: Checks Rust formatting and runs Clippy linter
-- **Testing**: Runs all tests
-- **Security**: Performs security audit using `cargo audit`
-- **Build**: Compiles the application in release mode
-- **Docker Test**: Builds Docker image to ensure Dockerfile works
+- **Build**: Compiles the application in release mode to verify it builds successfully
+- **Docker Build Test**: Builds Docker image to ensure Dockerfile works correctly
 
 ### 2. Docker Build and Push (`.github/workflows/docker.yml`)
 **Manual workflow** triggered via GitHub Actions UI:
