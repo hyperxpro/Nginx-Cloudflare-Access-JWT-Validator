@@ -7,6 +7,9 @@ Dockerfile
 README.md
 *.md
 
+# Lock file - let Cargo generate it during build
+Cargo.lock
+
 # IDE and editor files
 .vscode/
 .idea/
