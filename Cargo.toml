@@ -1,0 +1,23 @@
+[package]
+name = "Nginx-Cloudflare-Access-JWT-Validator"
+version = "0.1.0"
+edition = "2021"
+description = "A Rust-based JWT validator for Nginx integration with Cloudflare Access authentication"
+authors = ["hyperxpro"]
+license = "Apache-2.0"
+repository = "https://github.com/hyperxpro/Nginx-Cloudflare-Access-JWT-Validator"
+homepage = "https://github.com/hyperxpro/Nginx-Cloudflare-Access-JWT-Validator"
+readme = "README.md"
+keywords = ["nginx", "cloudflare", "jwt", "authentication", "validator"]
+categories = ["authentication", "web-programming::http-server"]
+rust-version = "1.70"
+
+[dependencies]
+axum = "0.8.4"
+jsonwebtoken = "9.3.1"
+reqwest = { version = "0.12.15", features = ["json"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+tokio = { version = "1.45.1", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
