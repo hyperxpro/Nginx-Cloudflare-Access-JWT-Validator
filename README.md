@@ -114,7 +114,10 @@ docker run -d \
 - **Purpose**: Validates JWT tokens for Nginx auth_request
 - **Headers**:
   - `CF-Authorization`: JWT token (or via cookie)
-  - `X-Expected-Audience`: Expected audience claim
+  - `X-Expected-Audience`: Expected audience claim (optional if using query parameter)
+- **Query Parameters**:
+  - `aud`: Expected audience claim (optional if using header)
+- **How Audience is Determined**: The service will use the `X-Expected-Audience` header if present, otherwise it will use the `aud` query parameter. If neither is provided, the request is rejected with `401 Unauthorized`.
 - **Responses**:
   - `204 No Content`: Valid JWT
   - `401 Unauthorized`: Invalid or missing JWT
@@ -410,6 +413,10 @@ For issues and questions:
 - **Community**: Discussions tab on GitHub repository
 
 ## Changelog
+
+### Version 0.2.0
+- Added support for passing the expected audience via the `aud` query parameter as an alternative to the `X-Expected-Audience` header in the `/auth` endpoint.
+- Updated documentation to reflect this new feature.
 
 ### Version 0.1.0
 - Initial release
