@@ -1,4 +1,4 @@
-use axum::{extract::State, http::StatusCode, response::IntoResponse, routing::get, Router};
+use axum::{extract::{State, Query}, http::StatusCode, response::IntoResponse, routing::get, Router};
 use axum::http::{Request, HeaderMap, HeaderValue};
 use jsonwebtoken::{decode, decode_header, Algorithm, DecodingKey, Validation, TokenData};
 use serde::Deserialize;
@@ -220,11 +220,22 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn auth_handler(State(state): State<Arc<AppState>>, req: Request<axum::body::Body>) -> impl IntoResponse {
-    // Extract audience from header (instead of app_id mapping)
-    let aud = req.headers().get("x-expected-audience").and_then(|v| v.to_str().ok());
+#[derive(Debug, Deserialize)]
+struct AuthQuery {
+    aud: Option<String>,
+}
+
+async fn auth_handler(
+    State(state): State<Arc<AppState>>,
+    Query(query): Query<AuthQuery>,
+    req: Request<axum::body::Body>
+) -> impl IntoResponse {
+    // Extract audience from header or query parameter
+    let aud = req.headers().get("x-expected-audience").and_then(|v| v.to_str().ok())
+        .map(|s| s.to_string())
+        .or(query.aud.clone());
     let Some(aud) = aud else {
-        debug!("Missing X-Expected-Audience header");
+        debug!("Missing X-Expected-Audience header and 'aud' query parameter");
         debug!("Available headers:");
         for (name, value) in req.headers() {
             if let Ok(val_str) = value.to_str() {
@@ -233,7 +244,7 @@ async fn auth_handler(State(state): State<Arc<AppState>>, req: Request<axum::bod
         }
         return create_response(StatusCode::UNAUTHORIZED);
     };
-    debug!("Expected audience from header: {}", aud);
+    debug!("Expected audience: {}", aud);
     
     // Extract JWT from CF_Authorization header or cookie
     let jwt = extract_jwt(&req);

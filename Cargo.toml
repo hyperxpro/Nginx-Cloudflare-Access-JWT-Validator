@@ -1,6 +1,6 @@
 [package]
 name = "Nginx-Cloudflare-Access-JWT-Validator"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "A Rust-based JWT validator for Nginx integration with Cloudflare Access authentication"
 authors = ["hyperxpro"]
