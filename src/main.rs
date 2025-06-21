@@ -256,7 +256,7 @@ async fn auth_handler(
     debug!("JWT found: {}...", &jwt[..jwt.len().min(50)]);
     
     // Validate JWT
-    match validate_jwt(&jwt, &state, aud).await {
+    match validate_jwt(&jwt, &state, &aud).await {
         Ok(_) => {
             debug!("JWT validation successful");
             create_response(StatusCode::NO_CONTENT) // 204 for Nginx auth_request
