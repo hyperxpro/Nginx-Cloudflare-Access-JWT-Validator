@@ -12,20 +12,21 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy dependency files first for better layer caching
-COPY Cargo.toml Cargo.lock ./
+COPY Cargo.toml ./
 
 # Create a dummy main.rs to cache dependencies
 RUN mkdir src && echo "fn main() {}" > src/main.rs
 
-# Build dependencies (this layer will be cached unless Cargo.toml/Cargo.lock changes)
-RUN cargo build --release --locked && rm -rf src
+# Build dependencies (this layer will be cached unless Cargo.toml changes)
+# Cargo will generate Cargo.lock during this step
+RUN cargo build --release && rm -rf src
 
 # Copy the actual source code
 COPY src ./src
 
 # Build the application
 # Touch main.rs to ensure it's rebuilt with the new source
-RUN touch src/main.rs && cargo build --release --locked
+RUN touch src/main.rs && cargo build --release
 
 # Runtime stage - use Google's distroless image with SSL support for maximum security
 FROM gcr.io/distroless/cc-debian12:nonroot
