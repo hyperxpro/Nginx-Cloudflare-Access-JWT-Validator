@@ -1,5 +1,5 @@
 # Multi-stage build for optimized production image
-FROM rust:1.87-slim AS builder
+FROM rust:1.88-slim AS builder
 
 # Install build dependencies for Debian/Ubuntu
 RUN apt-get update && apt-get install -y \
@@ -12,21 +12,20 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy dependency files first for better layer caching
-COPY Cargo.toml ./
+COPY Cargo.toml Cargo.lock ./
 
 # Create a dummy main.rs to cache dependencies
 RUN mkdir src && echo "fn main() {}" > src/main.rs
 
-# Build dependencies (this layer will be cached unless Cargo.toml changes)
-# Cargo will generate Cargo.lock during this step
-RUN cargo build --release && rm -rf src
+# Build dependencies (this layer will be cached unless Cargo.toml/Cargo.lock changes)
+RUN cargo build --release --locked && rm -rf src
 
 # Copy the actual source code
 COPY src ./src
 
 # Build the application
 # Touch main.rs to ensure it's rebuilt with the new source
-RUN touch src/main.rs && cargo build --release
+RUN touch src/main.rs && cargo build --release --locked
 
 # Runtime stage - use Google's distroless image with SSL support for maximum security
 FROM gcr.io/distroless/cc-debian12:nonroot
